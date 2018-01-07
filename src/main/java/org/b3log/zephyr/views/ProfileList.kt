@@ -1,8 +1,6 @@
 package org.b3log.zephyr.views
 
-import org.b3log.zephyr.controller.PersonController
 import org.b3log.zephyr.controller.ProfileController
-import org.b3log.zephyr.model.Person
 import org.b3log.zephyr.model.Profile
 import tornadofx.*
 
@@ -10,8 +8,10 @@ class ProfileList : View() {
     val controller: ProfileController by inject()
 
     override val root = tableview(controller.profiles) {
-        column("Id", Profile::idProperty)
-        column("Name", Profile::nameProperty)
+        prefWidth = 180.0
+        minWidth = 100.0
+        column("Id", Profile::idProperty).minWidth(20)
+        column("Name", Profile::nameProperty).minWidth(100)
         bindSelected(controller.selectedProfile)
         smartResize()
     }

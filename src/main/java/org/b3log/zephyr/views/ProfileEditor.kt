@@ -1,10 +1,8 @@
 package org.b3log.zephyr.views
 
 import javafx.scene.control.TableView
-import org.b3log.zephyr.controller.PersonController
 import org.b3log.zephyr.controller.ProfileController
 import org.b3log.zephyr.model.Host
-import org.b3log.zephyr.model.PhoneNumber
 import tornadofx.*
 
 class ProfileEditor : View() {
@@ -12,7 +10,8 @@ class ProfileEditor : View() {
     var hostTable: TableView<Host> by singleAssign()
 
     override val root = form {
-        fieldset("Profile Information") {
+        prefWidth=400.0
+        /*fieldset("Profile Information") {
             field("Name") {
                 textfield(controller.selectedProfile.name)
             }
@@ -21,16 +20,16 @@ class ProfileEditor : View() {
                     controller.selectedProfile.commit()
                 }
             }
-        }
+        }*/
         fieldset("Host List") {
             vbox(5.0) {
                 tableview<Host> {
                     hostTable = this
                     isEditable = true
                     smartResize()
-                    column("enable",Host::enable).makeEditable()
-                    column("ip", Host::ip).makeEditable()
-                    column("domain", Host::domain).makeEditable()
+                    column("",Host::enable).makeEditable().minWidth(20)
+                    column("IP地址", Host::ip).minWidth(150)
+                    column("域名", Host::domain).minWidth(150)
                     itemsProperty().bind(controller.selectedProfile.hosts)
                 }
                 button("Add host") {
