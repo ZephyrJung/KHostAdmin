@@ -1,9 +1,5 @@
 package org.b3log.zephyr.utils
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.b3log.zephyr.utils.model.Config
 import org.b3log.zephyr.utils.model.HostJson
 import java.io.File
 import java.io.InputStream
@@ -38,14 +34,6 @@ class HostUtil {
 
     fun saveProfile(profileId: Int, profileName: String, hosts: List<HostJson>) {
 
-    }
-
-    fun loadFromFile(): Config {
-        val mapper = ObjectMapper(YAMLFactory()) // Enable YAML parsing
-        mapper.registerModule(KotlinModule()) // Enable Kotlin support
-        return File("/config.yaml").inputStream().use {
-            mapper.readValue(it, Config::class.java)
-        }
     }
 }
 
