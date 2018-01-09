@@ -1,42 +1,53 @@
 package org.b3log.zephyr.views
 
 import javafx.beans.property.SimpleStringProperty
-import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import org.b3log.zephyr.controller.ProfileController
-import org.b3log.zephyr.model.Host
+import org.b3log.zephyr.views.model.Host
+import org.b3log.zephyr.views.model.Profile
 import tornadofx.*
-import javax.swing.GroupLayout
+import java.util.*
 
 class ProfileEditor : View() {
     val controller: ProfileController by inject()
+
     var hostTable: TableView<Host> by singleAssign()
 
     override val root = form {
         prefWidth = 400.0
-        /*fieldset("Profile Information") {
-            field("Name") {
-                textfield(controller.selectedProfile.name)
-            }
-            button("Save") {
-                setOnAction {
-                    controller.selectedProfile.commit()
-                }
-            }
-        }*/
         fieldset("Host List") {
             vbox(5.0) {
                 tableview<Host> {
                     hostTable = this
                     isEditable = true
                     smartResize()
-                    column("",Host::enable).useCheckbox(editable = true).minWidth(20)
+                    column("", Host::enable).useCheckbox(editable = true).minWidth(20)
                     column("IP地址", Host::ip).minWidth(150)
                     column("域名", Host::domain).minWidth(150)
                     itemsProperty().bind(controller.selectedProfile.hosts)
                 }
                 buttonbar {
-                    button("Add") {
+                    button("Add Profile") {
+                        setOnAction {
+                            dialog("Add new profile") {
+                                minWidth = 200.0
+                                prefWidth = 200.0
+                                val model = ViewModel()
+                                val profile = model.bind { SimpleStringProperty() }
+                                field("Profile") {
+                                    textfield(profile) {
+                                        required()
+                                    }
+                                }
+                                buttonbar {
+                                    button("Save").action {
+                                        model.commit { saveProfile(profile.value) }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    button("Add Host") {
                         setOnAction {
                             //todo 我脚的这样写不太对吼。。。
                             dialog("添加Host(默认启用)") {
@@ -57,7 +68,7 @@ class ProfileEditor : View() {
                                 }
                                 buttonbar {
                                     button("Save").action {
-                                        model.commit { doSave(ip.value, domain.value) }
+                                        model.commit { saveHost(ip.value, domain.value) }
                                     }
                                 }
                             }
@@ -68,7 +79,11 @@ class ProfileEditor : View() {
         }
     }
 
-    private fun doSave(ip: String, domain: String) {
+    private fun saveProfile(profile:String){
+        controller.profiles.add(Profile(controller.profiles.size,profile, Arrays.asList()))
+    }
+
+    private fun saveHost(ip: String, domain: String) {
         val newHost = Host(true, ip, domain, controller.selectedProfile.id.value)
         controller.selectedProfile.hosts.value.add(newHost)
         hostTable.selectionModel.select(newHost)

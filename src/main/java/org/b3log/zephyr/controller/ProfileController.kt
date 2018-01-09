@@ -1,7 +1,7 @@
 package org.b3log.zephyr.controller
 
 import javafx.collections.FXCollections
-import org.b3log.zephyr.model.*
+import org.b3log.zephyr.views.model.*
 import tornadofx.Controller
 
 class ProfileController : Controller() {

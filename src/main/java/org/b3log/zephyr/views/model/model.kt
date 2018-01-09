@@ -1,4 +1,4 @@
-package org.b3log.zephyr.model
+package org.b3log.zephyr.views.model
 
 import javafx.collections.FXCollections
 import tornadofx.ItemViewModel
