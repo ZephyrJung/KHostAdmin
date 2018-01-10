@@ -10,6 +10,7 @@ import java.io.File
 object Config {
 //    val hostPath = "/etc/hosts"
     val hostPath = System.getProperty("user.home") + File.separator + ".khost/host"
+    val backupPath = System.getProperty("user.home") + File.separator + ".khost/host.bak"
     val filePath = System.getProperty("user.home") + File.separator + ".khost"
 
     fun getProfileHostPath(profile: String): String {

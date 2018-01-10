@@ -7,6 +7,7 @@ import javafx.scene.control.ButtonType
 import javafx.scene.control.TableView
 import org.b3log.zephyr.constants.Config
 import org.b3log.zephyr.controller.ProfileController
+import org.b3log.zephyr.utils.HostUtil
 import org.b3log.zephyr.views.model.Host
 import org.b3log.zephyr.views.model.Profile
 import tornadofx.*
@@ -94,18 +95,18 @@ class ProfileEditor : View() {
                     }
                     button("Active") {
                         setOnAction {
-                            val result = false
+                            val result = activeHosts()
                             if (result) {
-                                alert(Alert.AlertType.CONFIRMATION, "", "启用成功")
+                                alert(Alert.AlertType.INFORMATION, "", "启用成功", ButtonType.OK)
                             } else {
-                                alert(Alert.AlertType.ERROR, "", "启用失败")
+                                alert(Alert.AlertType.ERROR, "", "启用失败", ButtonType.OK)
                             }
                         }
                     }
                     button("Export") {
                         setOnAction {
-                            dialog("添加Host(默认启用)") {
-
+                            dialog("导出到Host文件（慎用）") {
+                                exportHosts()
                             }
                         }
                     }
@@ -134,10 +135,18 @@ class ProfileEditor : View() {
     }
 
     private fun saveHost(ip: String, domain: String, comment: String) {
-//        val profile = controller.selectedProfile.id.value
         val newHost = Host(true, ip, domain, comment)
         controller.selectedProfile.hosts.value.add(newHost)
         hostTable.selectionModel.select(newHost)
         hostTable.edit(hostTable.items.size - 1, hostTable.columns.first())
+    }
+
+    private fun activeHosts(): Boolean {
+        HostUtil.writeProfile(controller.selectedProfile.name.value,controller.selectedProfile.hosts.value)
+        return HostUtil.writeHosts(controller.selectedProfile.hosts.value, Config.hostPath)
+    }
+
+    private fun exportHosts(): Boolean {
+        return HostUtil.writeHosts(controller.selectedProfile.hosts.value, Config.backupPath)
     }
 }

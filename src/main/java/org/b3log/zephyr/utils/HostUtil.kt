@@ -1,9 +1,15 @@
 package org.b3log.zephyr.utils
 
+import javafx.collections.ObservableList
+import org.b3log.zephyr.constants.Config.backupPath
 import org.b3log.zephyr.constants.Config.filePath
 import org.b3log.zephyr.constants.Config.getProfileHostPath
 import org.b3log.zephyr.constants.Config.hostPath
+import org.b3log.zephyr.controller.ProfileController
 import org.b3log.zephyr.utils.model.HostJson
+import org.b3log.zephyr.views.model.Host
+import org.b3log.zephyr.views.model.Profile
+import sun.text.normalizer.UTF16.append
 import java.io.File
 import java.io.InputStream
 
@@ -54,18 +60,61 @@ object HostUtil {
 
     }
 
-    fun saveMainHost(hosts: List<HostJson>) {
-
-    }
-
-    fun saveProfile(profileId: Int, profileName: String, hosts: List<HostJson>) {
-
-    }
-
     fun readProfile(profile: String): String {
         val inputStream: InputStream = File(getProfileHostPath(profile)).inputStream()
         val json = inputStream.bufferedReader().readLine()
         inputStream.bufferedReader().close()
         return json
+    }
+
+    fun writeHosts(hosts: List<Host>, path: String): Boolean {
+        try {
+            val out = StringBuilder()
+            hosts.forEach { host ->
+                out.append(if (host.enable) {
+                    "#"
+                } else "").append(" ")
+                        .append(host.ip).append(" ")
+                        .append(host.domain)
+                if (host.comment.isNotBlank()) {
+                    out.append(" #").append(host.comment)
+                }
+                out.append("\n")
+            }
+            File(path).bufferedWriter().use { o -> o.write(out.toString()) }
+            return true
+        } catch (e: Exception) {
+            println(e)
+            return false
+        }
+    }
+
+    fun resetHost() {
+        val inputStream: InputStream = File(backupPath).inputStream()
+        val strBuilder = StringBuilder()
+        inputStream.bufferedReader().useLines { lines ->
+            lines.forEach {
+                strBuilder.append(it).append("\n")
+            }
+        }
+        inputStream.bufferedReader().close()
+        File(hostPath).bufferedWriter().use { out -> out.write(strBuilder.toString()) }
+    }
+
+    fun writeProfile(profile: String, hosts: List<Host>) {
+        val hostList = mutableListOf<HostJson>()
+        hosts.forEach { host ->
+            hostList.add(HostJson(
+                    enable = host.enable,
+                    ip = host.ip,
+                    domain = host.domain,
+                    comment = host.comment
+            ))
+        }
+        File(getProfileHostPath(profile)).bufferedWriter().use { out -> out.write(JsonUtil.getJsonFromHost(hostList)) }
+    }
+
+    fun readProfiles(): Profile {
+
     }
 }

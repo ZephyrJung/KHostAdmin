@@ -13,13 +13,8 @@ class ProfileController : Controller() {
     val selectedProfile = ProfileModel()
 
     init {
-        // Add some test persons for the demo
         profiles.add(Profile(0,"Main",getHosts("Main")))
-//        profiles.add(Profile(1, "Prod", listOf(Host(true, "192.168.0.1","local host",1))))
-//        profiles.add(Profile(2, "Uat", listOf(
-//                Host(true, "192.168.0.2","local host",2),
-//                Host(true, "192.168.0.3","local host",2)
-//        )))
+        profiles.addAll(HostUtil.readProfiles())
     }
 
     private fun getHosts(profile:String): List<Host> {

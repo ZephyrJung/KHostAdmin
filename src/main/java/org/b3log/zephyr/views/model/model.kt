@@ -21,9 +21,6 @@ class Host(enable: Boolean, ip: String, domain: String, comment: String) {
 
     var comment by property(comment)
     fun commentProperty() = getProperty(Host::comment)
-
-//    var profile by property(profile)
-//    fun profileProperty() = getProperty(Host::profile)
 }
 
 /**
