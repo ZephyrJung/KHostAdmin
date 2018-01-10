@@ -7,6 +7,7 @@ package org.b3log.zephyr.utils.model
  */
 data class HostJson(
         val enable : Boolean,
-        val host : String,
-        val domain : String
+        val ip : String,
+        val domain : String,
+        val comment : String
 )

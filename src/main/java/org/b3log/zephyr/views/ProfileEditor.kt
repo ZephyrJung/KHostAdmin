@@ -1,11 +1,16 @@
 package org.b3log.zephyr.views
 
 import javafx.beans.property.SimpleStringProperty
+import javafx.geometry.Pos
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import javafx.scene.control.TableView
+import org.b3log.zephyr.constants.Config
 import org.b3log.zephyr.controller.ProfileController
 import org.b3log.zephyr.views.model.Host
 import org.b3log.zephyr.views.model.Profile
 import tornadofx.*
+import java.io.File
 import java.util.*
 
 class ProfileEditor : View() {
@@ -14,9 +19,17 @@ class ProfileEditor : View() {
     var hostTable: TableView<Host> by singleAssign()
 
     override val root = form {
-        prefWidth = 400.0
+        prefWidth = 450.0
         fieldset("Host List") {
             vbox(5.0) {
+                hbox(5.0) {
+                    alignment = Pos.CENTER_LEFT
+                    label("查找")
+                    textfield {
+                        minWidth = 200.0
+                        prefWidth = 200.0
+                    }
+                }
                 tableview<Host> {
                     hostTable = this
                     isEditable = true
@@ -56,6 +69,7 @@ class ProfileEditor : View() {
                                 val model = ViewModel()
                                 val ip = model.bind { SimpleStringProperty() }
                                 val domain = model.bind { SimpleStringProperty() }
+                                val comment = model.bind { SimpleStringProperty() }
                                 field("IP") {
                                     textfield(ip) {
                                         required()
@@ -66,11 +80,32 @@ class ProfileEditor : View() {
                                         required()
                                     }
                                 }
-                                buttonbar {
-                                    button("Save").action {
-                                        model.commit { saveHost(ip.value, domain.value) }
+                                field("说明") {
+                                    textfield(comment) {
                                     }
                                 }
+                                buttonbar {
+                                    button("Save").action {
+                                        model.commit { saveHost(ip.value, domain.value, comment.value) }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    button("Active") {
+                        setOnAction {
+                            val result = false
+                            if (result) {
+                                alert(Alert.AlertType.CONFIRMATION, "", "启用成功")
+                            } else {
+                                alert(Alert.AlertType.ERROR, "", "启用失败")
+                            }
+                        }
+                    }
+                    button("Export") {
+                        setOnAction {
+                            dialog("添加Host(默认启用)") {
+
                             }
                         }
                     }
@@ -79,12 +114,28 @@ class ProfileEditor : View() {
         }
     }
 
-    private fun saveProfile(profile:String){
-        controller.profiles.add(Profile(controller.profiles.size,profile, Arrays.asList()))
+    private fun saveProfile(profile: String) {
+        val file = File(Config.getProfileHostPath(profile))
+        if (file.exists()) {
+            val alert = Alert(Alert.AlertType.WARNING, "profile文件已存在，是否覆盖？", ButtonType.NO, ButtonType.YES)
+            alert.headerText = ""
+            val result = alert.showAndWait().get()
+            if (result == ButtonType.NO) {
+                return
+            } else if (result == ButtonType.YES) {
+                file.writer().flush()
+                file.writer().close()
+                return
+            }
+        }
+        file.writer().flush()
+        file.writer().close()
+        controller.profiles.add(Profile(controller.profiles.size, profile, Arrays.asList()))
     }
 
-    private fun saveHost(ip: String, domain: String) {
-        val newHost = Host(true, ip, domain, controller.selectedProfile.id.value)
+    private fun saveHost(ip: String, domain: String, comment: String) {
+//        val profile = controller.selectedProfile.id.value
+        val newHost = Host(true, ip, domain, comment)
         controller.selectedProfile.hosts.value.add(newHost)
         hostTable.selectionModel.select(newHost)
         hostTable.edit(hostTable.items.size - 1, hostTable.columns.first())
