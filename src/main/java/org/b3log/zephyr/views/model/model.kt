@@ -28,10 +28,7 @@ class Host(enable: Boolean, ip: String, domain: String, comment: String) {
  * 将对原文件做备份，如果没有执行export操作，使用完成时，将恢复原状
  * 再打开始，可以根据配置文件，重新使得之前生效的profile写入
  */
-class Profile(id: Int, name: String, hosts: List<Host>) {
-    var id by property(id)
-    fun idProperty() = getProperty(Profile::id)
-
+class Profile(name: String, hosts: List<Host>) {
     var name by property(name)
     fun nameProperty() = getProperty(Profile::name)
 
@@ -40,7 +37,6 @@ class Profile(id: Int, name: String, hosts: List<Host>) {
 }
 
 class ProfileModel : ItemViewModel<Profile>() {
-    val id = bind { item?.idProperty() }
     val name = bind { item?.nameProperty() }
     val hosts = bind { item?.hostsProperty() }
 }

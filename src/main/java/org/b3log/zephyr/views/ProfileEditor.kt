@@ -109,7 +109,7 @@ class ProfileEditor : View() {
                                 exportHosts()
                             }
                         }
-                    }
+                    }.hide() //为了避免误操作，暂时隐藏本按钮
                 }
             }
         }
@@ -131,7 +131,7 @@ class ProfileEditor : View() {
         }
         file.writer().flush()
         file.writer().close()
-        controller.profiles.add(Profile(controller.profiles.size, profile, Arrays.asList()))
+        controller.profiles.add(Profile(profile, Arrays.asList()))
     }
 
     private fun saveHost(ip: String, domain: String, comment: String) {

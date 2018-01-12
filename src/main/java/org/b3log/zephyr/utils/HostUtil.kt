@@ -1,15 +1,12 @@
 package org.b3log.zephyr.utils
 
-import javafx.collections.ObservableList
 import org.b3log.zephyr.constants.Config.backupPath
 import org.b3log.zephyr.constants.Config.filePath
 import org.b3log.zephyr.constants.Config.getProfileHostPath
 import org.b3log.zephyr.constants.Config.hostPath
-import org.b3log.zephyr.controller.ProfileController
 import org.b3log.zephyr.utils.model.HostJson
 import org.b3log.zephyr.views.model.Host
 import org.b3log.zephyr.views.model.Profile
-import sun.text.normalizer.UTF16.append
 import java.io.File
 import java.io.InputStream
 
@@ -28,7 +25,7 @@ object HostUtil {
         backupMainHost()
     }
 
-    fun backupMainHost() {
+    private fun backupMainHost() {
         val hostParttern = "[0-9]+.[0-9]+.[0-9]+.[0-9]+".toRegex()
         val hostList = mutableListOf<HostJson>()
 
@@ -60,7 +57,7 @@ object HostUtil {
 
     }
 
-    fun readProfile(profile: String): String {
+    private fun readProfile(profile: String): String {
         val inputStream: InputStream = File(getProfileHostPath(profile)).inputStream()
         val json = inputStream.bufferedReader().readLine()
         inputStream.bufferedReader().close()
@@ -71,7 +68,7 @@ object HostUtil {
         try {
             val out = StringBuilder()
             hosts.forEach { host ->
-                out.append(if (host.enable) {
+                out.append(if (!host.enable) {
                     "#"
                 } else "").append(" ")
                         .append(host.ip).append(" ")
@@ -114,7 +111,27 @@ object HostUtil {
         File(getProfileHostPath(profile)).bufferedWriter().use { out -> out.write(JsonUtil.getJsonFromHost(hostList)) }
     }
 
-    fun readProfiles(): Profile {
-        TODO("读取所有Profile并添加到列表中")
+    fun readProfiles(): List<Profile> {
+        val profiles = mutableListOf<Profile>()
+        val dir = File(filePath)
+        val files = dir.listFiles()
+        files.forEach { f ->
+            if (f.isFile && f.name.endsWith(".json") && f.name != "Main.json") {
+                profiles.add(Profile(f.name.removeSuffix(".json"), getHosts(f.name.removeSuffix(".json"))))
+            }
+        }
+        return profiles
     }
+
+    fun getHosts(profile: String): List<Host> {
+        return try {
+            JsonUtil.getHostFromJson(HostUtil.readProfile(profile))
+        } catch (e: Exception) {
+            listOf()
+        }
+    }
+}
+
+fun main(args: Array<String>) {
+    println("test.json".removeSuffix(".json"))
 }

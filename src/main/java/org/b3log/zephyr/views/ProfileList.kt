@@ -10,7 +10,6 @@ class ProfileList : View() {
     override val root = tableview(controller.profiles) {
         prefWidth = 180.0
         minWidth = 100.0
-        column("Id", Profile::idProperty).minWidth(20)
         column("Name", Profile::nameProperty).minWidth(100).makeEditable().setOnEditCommit {
             println(it.tablePosition.row)
         }
