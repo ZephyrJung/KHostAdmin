@@ -25,8 +25,11 @@ object HostUtil {
         backupMainHost()
     }
 
+    private fun commonHost(){
+        TODO("添加公共Host，即每个profile都必须有的")
+    }
     private fun backupMainHost() {
-        val hostParttern = "[0-9]+.[0-9]+.[0-9]+.[0-9]+".toRegex()
+        val hostPattern = "[0-9]+.[0-9]+.[0-9]+.[0-9]+".toRegex()
         val hostList = mutableListOf<HostJson>()
 
         val inputStream: InputStream = File(hostPath).inputStream()
@@ -34,7 +37,7 @@ object HostUtil {
         inputStream.bufferedReader().useLines { lines ->
             lines.forEach {
                 strBuilder.append(it).append("\n")
-                val host = hostParttern.find(it)
+                val host = hostPattern.find(it)
                 if (host != null) {
                     try {
                         hostList.add(
@@ -130,8 +133,4 @@ object HostUtil {
             listOf()
         }
     }
-}
-
-fun main(args: Array<String>) {
-    println("test.json".removeSuffix(".json"))
 }
