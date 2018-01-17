@@ -16,4 +16,7 @@ object Config {
     fun getProfileHostPath(profile: String): String {
         return filePath+File.separator+profile+".json"
     }
+
+    //TODO add banner for profile
+    val banner = "#***-==>ProfileName<==-***#"
 }
