@@ -8,6 +8,7 @@ import java.io.File
  * Email: yu.zhang@7fresh.com
  */
 object Config {
+
     val hostPath = "/etc/hosts"
 //    val hostPath = System.getProperty("user.home") + File.separator + ".khost/host"
     val backupPath = System.getProperty("user.home") + File.separator + ".khost/host.bak"
@@ -17,6 +18,5 @@ object Config {
         return filePath+File.separator+profile+".json"
     }
 
-    //TODO add banner for profile
-    val banner = "#***-==>ProfileName<==-***#"
+    val Common = "Common"
 }

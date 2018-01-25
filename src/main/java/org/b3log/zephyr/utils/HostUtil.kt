@@ -1,5 +1,6 @@
 package org.b3log.zephyr.utils
 
+import org.b3log.zephyr.constants.Config
 import org.b3log.zephyr.constants.Config.backupPath
 import org.b3log.zephyr.constants.Config.filePath
 import org.b3log.zephyr.constants.Config.getProfileHostPath
@@ -25,9 +26,6 @@ object HostUtil {
         backupMainHost()
     }
 
-    private fun commonHost(){
-        TODO("添加公共Host，即每个profile都必须有的")
-    }
     private fun backupMainHost() {
         val hostPattern = "[0-9]+.[0-9]+.[0-9]+.[0-9]+".toRegex()
         val hostList = mutableListOf<HostJson>()
@@ -56,7 +54,8 @@ object HostUtil {
         }
         inputStream.bufferedReader().close()
         File(filePath + File.separator + "host.bak").bufferedWriter().use { out -> out.write(strBuilder.toString()) }
-        File(getProfileHostPath("Main")).bufferedWriter().use { out -> out.write(JsonUtil.getJsonFromHost(hostList)) }
+        //创建默认带的Common Profile
+        File(getProfileHostPath(Config.Common)).bufferedWriter().use { out -> out.write("") }
 
     }
 
@@ -69,7 +68,20 @@ object HostUtil {
 
     fun writeHosts(hosts: List<Host>, path: String): Boolean {
         try {
+            val common = JsonUtil.getHostFromJson(HostUtil.readProfile(Config.Common))
             val out = StringBuilder()
+            common.forEach { host ->
+                out.append(if (!host.enable) {
+                    "#"
+                } else "").append(" ")
+                        .append(host.ip).append(" ")
+                        .append(host.domain)
+                if (host.comment.isNotBlank()) {
+                    out.append(" #").append(host.comment)
+                }
+                out.append("\n")
+            }
+
             hosts.forEach { host ->
                 out.append(if (!host.enable) {
                     "#"
@@ -119,7 +131,7 @@ object HostUtil {
         val dir = File(filePath)
         val files = dir.listFiles()
         files.forEach { f ->
-            if (f.isFile && f.name.endsWith(".json") && f.name != "Main.json") {
+            if (f.isFile && f.name.endsWith(".json") && f.name != Config.Common + ".json") {
                 profiles.add(Profile(f.name.removeSuffix(".json"), getHosts(f.name.removeSuffix(".json"))))
             }
         }
