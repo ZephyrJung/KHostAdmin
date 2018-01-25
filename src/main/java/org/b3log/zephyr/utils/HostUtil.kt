@@ -55,7 +55,13 @@ object HostUtil {
         inputStream.bufferedReader().close()
         File(filePath + File.separator + "host.bak").bufferedWriter().use { out -> out.write(strBuilder.toString()) }
         //创建默认带的Common Profile
-        File(getProfileHostPath(Config.Common)).bufferedWriter().use { out -> out.write("") }
+        val base = JsonUtil.getJsonFromHost(listOf(HostJson(
+                enable = true,
+                ip = "127.0.0.1",
+                domain = "localhost",
+                comment = "default"
+        )))
+        File(getProfileHostPath(Config.Common)).bufferedWriter().use { out -> out.write(base) }
 
     }
 
