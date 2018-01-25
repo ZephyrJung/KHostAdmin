@@ -1,7 +1,0 @@
-version: 1.0
-released: 2016-09-10
-
-database:
-  jdbcUrl: jdbc:postgresql://localhost:5432/hallila
-  username: postgres
-  password: postgres

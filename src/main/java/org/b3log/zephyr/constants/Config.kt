@@ -18,9 +18,5 @@ object Config {
         return appPath +File.separator+profile+".json"
     }
 
-    fun getAppIconPath():String{
-        return "file://"+appPath+File.separator+"khost.png"
-    }
-
     val Common = "Common"
 }

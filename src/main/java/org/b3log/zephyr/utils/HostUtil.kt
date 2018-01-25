@@ -1,8 +1,8 @@
 package org.b3log.zephyr.utils
 
 import org.b3log.zephyr.constants.Config
-import org.b3log.zephyr.constants.Config.backupPath
 import org.b3log.zephyr.constants.Config.appPath
+import org.b3log.zephyr.constants.Config.backupPath
 import org.b3log.zephyr.constants.Config.getProfileHostPath
 import org.b3log.zephyr.constants.Config.hostPath
 import org.b3log.zephyr.utils.model.HostJson
@@ -55,13 +55,7 @@ object HostUtil {
         inputStream.bufferedReader().close()
         File(appPath + File.separator + "host.bak").bufferedWriter().use { out -> out.write(strBuilder.toString()) }
         //创建默认带的Common Profile
-        val base = JsonUtil.getJsonFromHost(listOf(HostJson(
-                enable = true,
-                ip = "127.0.0.1",
-                domain = "localhost",
-                comment = "default"
-        )))
-        File(getProfileHostPath(Config.Common)).bufferedWriter().use { out -> out.write(base) }
+        File(getProfileHostPath(Config.Common)).bufferedWriter().use { out -> out.write("") }
 
     }
 
