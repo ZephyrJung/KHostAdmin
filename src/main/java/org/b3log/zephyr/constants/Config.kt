@@ -8,7 +8,6 @@ import java.io.File
  * Email: yu.zhang@7fresh.com
  */
 object Config {
-    var backupHosts = ""
     val hostPath = "/etc/hosts"
 //    val hostPath = System.getProperty("user.home") + File.separator + ".khost/host"
     val backupPath = System.getProperty("user.home") + File.separator + ".khost/host.bak"

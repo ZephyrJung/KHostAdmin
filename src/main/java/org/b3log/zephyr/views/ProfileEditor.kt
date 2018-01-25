@@ -143,10 +143,10 @@ class ProfileEditor : View() {
 
     private fun activeHosts(): Boolean {
         HostUtil.writeProfile(controller.selectedProfile.name.value,controller.selectedProfile.hosts.value)
-        return HostUtil.writeHosts(controller.selectedProfile.hosts.value, Config.hostPath,controller.selectedProfile.name.value)
+        return HostUtil.writeHosts(controller.selectedProfile.hosts.value, Config.hostPath)
     }
 
     private fun exportHosts(): Boolean {
-        return HostUtil.writeHosts(controller.selectedProfile.hosts.value, Config.backupPath,controller.selectedProfile.name.value)
+        return HostUtil.writeHosts(controller.selectedProfile.hosts.value, Config.backupPath)
     }
 }

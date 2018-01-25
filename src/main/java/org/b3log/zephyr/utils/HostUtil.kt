@@ -1,6 +1,5 @@
 package org.b3log.zephyr.utils
 
-import org.b3log.zephyr.constants.Config
 import org.b3log.zephyr.constants.Config.backupPath
 import org.b3log.zephyr.constants.Config.filePath
 import org.b3log.zephyr.constants.Config.getProfileHostPath
@@ -56,7 +55,6 @@ object HostUtil {
             }
         }
         inputStream.bufferedReader().close()
-        Config.backupHosts = strBuilder.toString()
         File(filePath + File.separator + "host.bak").bufferedWriter().use { out -> out.write(strBuilder.toString()) }
         File(getProfileHostPath("Main")).bufferedWriter().use { out -> out.write(JsonUtil.getJsonFromHost(hostList)) }
 
@@ -69,10 +67,9 @@ object HostUtil {
         return json
     }
 
-    fun writeHosts(hosts: List<Host>, path: String, profile: String): Boolean {
+    fun writeHosts(hosts: List<Host>, path: String): Boolean {
         try {
-            val out = StringBuilder(Config.backupHosts)
-            out.append(Config.banner.replace("ProfileName",profile))
+            val out = StringBuilder()
             hosts.forEach { host ->
                 out.append(if (!host.enable) {
                     "#"
