@@ -4,6 +4,7 @@ import tornadofx.*
 
 
 class KHostMainView : View("KHost") {
+
     override val root = hbox {
         add<ProfileList>()
         add<ProfileEditor>()

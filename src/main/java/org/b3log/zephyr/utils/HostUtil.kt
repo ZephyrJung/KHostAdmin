@@ -2,7 +2,7 @@ package org.b3log.zephyr.utils
 
 import org.b3log.zephyr.constants.Config
 import org.b3log.zephyr.constants.Config.backupPath
-import org.b3log.zephyr.constants.Config.filePath
+import org.b3log.zephyr.constants.Config.appPath
 import org.b3log.zephyr.constants.Config.getProfileHostPath
 import org.b3log.zephyr.constants.Config.hostPath
 import org.b3log.zephyr.utils.model.HostJson
@@ -19,7 +19,7 @@ import java.io.InputStream
 object HostUtil {
 
     fun init() {
-        val file = File(filePath)
+        val file = File(appPath)
         if (!file.isDirectory) {
             file.mkdir()
         }
@@ -53,7 +53,7 @@ object HostUtil {
             }
         }
         inputStream.bufferedReader().close()
-        File(filePath + File.separator + "host.bak").bufferedWriter().use { out -> out.write(strBuilder.toString()) }
+        File(appPath + File.separator + "host.bak").bufferedWriter().use { out -> out.write(strBuilder.toString()) }
         //创建默认带的Common Profile
         val base = JsonUtil.getJsonFromHost(listOf(HostJson(
                 enable = true,
@@ -134,7 +134,7 @@ object HostUtil {
 
     fun readProfiles(): List<Profile> {
         val profiles = mutableListOf<Profile>()
-        val dir = File(filePath)
+        val dir = File(appPath)
         val files = dir.listFiles()
         files.forEach { f ->
             if (f.isFile && f.name.endsWith(".json") && f.name != Config.Common + ".json") {
