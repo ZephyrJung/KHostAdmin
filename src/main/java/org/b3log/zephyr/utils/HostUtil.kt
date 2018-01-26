@@ -55,15 +55,17 @@ object HostUtil {
         inputStream.bufferedReader().close()
         File(appPath + File.separator + "host.bak").bufferedWriter().use { out -> out.write(strBuilder.toString()) }
         //创建默认带的Common Profile
-        File(getProfileHostPath(Config.Common)).bufferedWriter().use { out -> out.write("") }
-
+        val file = File(getProfileHostPath(Config.Common))
+        if(!file.exists()) {
+            File(getProfileHostPath(Config.Common)).bufferedWriter().use { out -> out.write("") }
+        }
     }
 
     private fun readProfile(profile: String): String {
         val inputStream: InputStream = File(getProfileHostPath(profile)).inputStream()
         val json = inputStream.bufferedReader().readLine()
         inputStream.bufferedReader().close()
-        return json
+        return json ?: ""
     }
 
     fun writeHosts(hosts: List<Host>, path: String): Boolean {
@@ -96,7 +98,7 @@ object HostUtil {
             File(path).bufferedWriter().use { o -> o.write(out.toString()) }
             return true
         } catch (e: Exception) {
-            println(e)
+            println(e.stackTrace)
             return false
         }
     }
